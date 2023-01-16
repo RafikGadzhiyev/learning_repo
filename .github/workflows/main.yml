@@ -1,7 +1,8 @@
-name: React build
+name: React deploy
 on: 
-  - push
-  - workflow_dispatch
+  push:
+   branches: [main]
+  workflow_dispatch:
 jobs: 
   build_app: 
     runs-on: ubuntu-latest
@@ -14,4 +15,16 @@ jobs:
       - name: Testing application
         run: npm run test
       - name: Building application
-        run: npm run build
+        run: npm run build,
+      - name: Deploying application
+      run: npm run deploy
+        run: |
+          git config --global user.name $user_name
+          git config --global user.email $user_email
+          git remote ser-url origin: https://${github_token}@github.com/${repository}
+          npm run deploy
+        env: 
+          user_name: 'github-actions[bot]'
+          user_email: 'github-actions[bot]@users.noreply.github.com'
+          github_token: ${{ secrets.DEPLOY_ACCESS_TOKEN }}
+          repository: ${{ github.repository }}
