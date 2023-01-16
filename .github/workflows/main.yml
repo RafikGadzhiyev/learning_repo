@@ -1,29 +1,71 @@
-name: React deploy
-on: 
+# name: React deploy
+# on: 
+#   push:
+#    branches: [main]
+# jobs: 
+#   build_app: 
+#     runs-on: ubuntu-latest
+#     steps: 
+#       - name: Read repository code
+#         uses: actions/checkout@v3
+#       - name: Installing dependencies
+#         # Prefereble ci method instead of install if your project has lock file
+#         run: npm ci
+#       - name: Testing application
+#         run: npm run test
+#       - name: Building application
+#         run: npm run build
+#       - name: Deploying application
+#       run: npm run deploy
+#         run: |
+#           git config --global user.name $user_name
+#           git config --global user.email $user_email
+#           git remote ser-url origin: https://${github_token}@github.com/${repository}
+#           npm run deploy
+#         env: 
+#           user_name: 'github-actions[bot]'
+#           user_email: 'github-actions[bot]@users.noreply.github.com'
+#           github_token: ${{ secrets.DEPLOY_ACCESS_TOKEN }}
+#           repository: ${{ github.repository }}
+
+name: CI/CD
+
+on:
   push:
-   branches: [main]
-jobs: 
-  build_app: 
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+
     runs-on: ubuntu-latest
-    steps: 
-      - name: Read repository code
-        uses: actions/checkout@v3
-      - name: Installing dependencies
-        # Prefereble ci method instead of install if your project has lock file
-        run: npm ci
-      - name: Testing application
-        run: npm run test
-      - name: Building application
-        run: npm run build,
-      - name: Deploying application
-      run: npm run deploy
-        run: |
-          git config --global user.name $user_name
-          git config --global user.email $user_email
-          git remote ser-url origin: https://${github_token}@github.com/${repository}
-          npm run deploy
-        env: 
-          user_name: 'github-actions[bot]'
-          user_email: 'github-actions[bot]@users.noreply.github.com'
-          github_token: ${{ secrets.DEPLOY_ACCESS_TOKEN }}
-          repository: ${{ github.repository }}
+
+    strategy:
+      matrix:
+        node-version: [12.x]
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Install dependencies
+      run: npm install
+
+    - name: Run the tests and generate coverage report
+      run: npm run test
+
+    - name: Build
+      run: npm run build
+
+    - name: Deploy
+      run: |
+        git config --global user.name $user_name
+        git config --global user.email $user_email
+        git remote set-url origin https://${github_token}@github.com/${repository}
+        npm run deploy
+      env:
+        user_name: 'github-actions[bot]'
+        user_email: 'github-actions[bot]@users.noreply.github.com'
+        github_token: ${{ secrets.DEPLOY_ACCESS_TOKEN }}
+        repository: ${{ github.repository }}
