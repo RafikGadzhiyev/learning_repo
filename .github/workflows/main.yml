@@ -1,8 +1,12 @@
-name: Basic React template
+name: 'React deployment'
 on: workflow_dispatch
-jobs:
-  test_job:
+jobs: 
+  build:
     runs-on: ubuntu-latest
     steps: 
-      - name: Just test job
-        run: echo Hello, Test!
+      - name: 'Install dependencies'
+        run: npm install
+      - name: 'Build project'
+        run: npm run build
+      - name: 'Test project'
+        run: npm run test    
