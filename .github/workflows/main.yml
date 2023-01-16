@@ -4,8 +4,8 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps: 
-      # - name: 'Install dependencies'
-        # run: npm install --config
+      - name: 'Install dependencies'
+        run: npm install --config
       - name: 'Build project'
         run: npm run build
       - name: 'Test project'
