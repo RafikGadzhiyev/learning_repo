@@ -1,12 +1,17 @@
-name: 'React deployment'
-on: workflow_dispatch
+name: React build
+on: 
+  -push
+  -workflow_dispatch
 jobs: 
-  build:
-    runs-on: ubuntu-latest
+  build_app: 
+    runs_on: ubuntu-latest
     steps: 
-      - name: 'Install dependencies'
-        run: npm install --config
-      - name: 'Build project'
+      - name: Read repository code
+        uses: actions/checkout@v3
+      - name: Installing dependencies
+        # Prefereble ci method instead of install if your project has lock file
+        run: npm ci
+      - name: Testing application
+        run: npm run test
+      - name: Building application
         run: npm run build
-      - name: 'Test project'
-        run: npm run test    
