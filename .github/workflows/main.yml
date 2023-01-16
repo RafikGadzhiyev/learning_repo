@@ -4,7 +4,7 @@ on:
   - workflow_dispatch
 jobs: 
   build_app: 
-    runs_on: ubuntu-latest
+    runs-on: ubuntu-latest
     steps: 
       - name: Read repository code
         uses: actions/checkout@v3
